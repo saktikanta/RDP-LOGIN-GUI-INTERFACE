@@ -383,7 +383,7 @@ function connect_rdp($svr_list, $admLogin)
 					try {
 						Start-Sleep -Milliseconds 1000
 						[Microsoft.VisualBasic.Interaction]::AppActivate("Windows Security")
-						Start-Sleep -Milliseconds 500
+						Start-Sleep -Milliseconds 1000
 						[System.Windows.Forms.SendKeys]::SendWait($( [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secPass)) )+'{ENTER}')
 						log "$attempts Attempt to login.."
 					} catch {
