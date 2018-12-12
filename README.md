@@ -1,6 +1,14 @@
 # RDP-LOGIN-GUI-INTERFACE
 loadbalancer rdp server
 
+<h1 align="center">
+  <br>
+  <img alt="FaceID" title="FaceID" src="https://github.com/xames3/FaceID/blob/repository_assets/PopShot_XA_logo_small.png?raw=true" width="250"></a>
+  <br>
+  RDP GUI Interface
+  <br>
+</h1>
+
 ## Directory structure given below
 ```
 ├───open_login_gui.hta
