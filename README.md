@@ -1,6 +1,16 @@
 # RDP-LOGIN-GUI-INTERFACE
 loadbalancer rdp server
 
+## Directory structure given below
+```
+├───open_login_gui.hta
+└───config
+    ├───env_config.ps1
+    ├───rdp_auto_login.ps1
+    ├───Images
+    |	└───img19.jpg
+    └───Logs
+```
 ## Create LOGIN GUI using .hta application
 ```html
 <!--intWindowStyle		Description
