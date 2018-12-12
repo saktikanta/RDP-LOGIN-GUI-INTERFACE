@@ -3,7 +3,7 @@ loadbalancer rdp server
 
 <h1 align="center">
   <br>
-  <img alt="FaceID" title="FaceID" src="https://github.com/xames3/FaceID/blob/repository_assets/PopShot_XA_logo_small.png?raw=true" width="250"></a>
+  <img alt="FaceID" title="FaceID" src="https://github.com/saktikanta/RDP-LOGIN-GUI-INTERFACE/blob/master/rdp1.png?raw=true" width="250"></a>
   <br>
   RDP GUI Interface
   <br>
