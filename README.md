@@ -3,7 +3,7 @@ loadbalancer rdp server
 
 <h1 align="center">
   <br>
-  <img alt="RDP GUI" title="RDPGUI" src="https://github.com/saktikanta/RDP-LOGIN-GUI-INTERFACE/blob/master/rdp1.png?raw=true" width="700"></a>
+  <img alt="RDP GUI" title="RDPGUI" src="https://github.com/saktikanta/RDP-LOGIN-GUI-INTERFACE/blob/master/rdp6.PNG?raw=true" width="700"></a>
   <br>
   RDP GUI Interface
   <br>
@@ -60,13 +60,20 @@ Sub RefreshLog
 End Sub
 
 Sub StartSIAL 
-   Dim oShell, scriptPath, appCmd, return, usr, pass, envNDmn, admIp, admLgn
+   Dim oShell, scriptPath, appCmd, return, usr, pass, envNDmn, admIp, admLgn, newFile
    StrRL.disabled="true"
    Set oShell = CreateObject("WScript.Shell") 
    scriptPath = oShell.CurrentDirectory & "\config\rdp_auto_login.ps1"
    scriptlog = oShell.CurrentDirectory & "\config\Logs\Rdp_Login.log"
    usr = UserArea.value
    pass = PasswordArea.value
+   newFile = oShell.CurrentDirectory & "\config\newTmp.txt"
+   
+   If pass <> "" Then
+      appCmd = "powershell ConvertTo-SecureString " & pass & " -AsPlainText -Force | ConvertFrom-SecureString | out-file -Filepath " & newFile
+      return = oShell.Run(appCmd, 0, true)
+   End If
+   
    envNDmn = envDmn.value
    admIp = dropdown2.value
    If checkbox1.Checked Then
@@ -74,11 +81,19 @@ Sub StartSIAL
    Else
       admLgn = "no"
    End If
+
+   If checkbox2.Checked Then
+      clearHist = "yes"
+	  checkbox2.Checked = False
+   Else
+      clearHist = "no"
+   End If
+   
    appCmd = "powershell echo 'Start Processing...' > " & scriptlog
    return = oShell.Run(appCmd, 0, true)
    RefreshLog 
    TimerID = window.setInterval("RefreshLog",1000)
-   appCmd = "powershell -executionpolicy bypass &'" & scriptPath & "' '" & envNDmn & "' '" & usr & "' '" & pass & "' '" & admLgn & "' '" & admIp & "' "
+   appCmd = "powershell -executionpolicy bypass &'" & scriptPath & "' '" & envNDmn & "' '" & usr & "' '" & admLgn & "' '" & clearHist & "' '" & admIp & "' "
    oShell.Run appCmd, 0, true
    StrRL.disabled="false"
 End Sub
@@ -92,13 +107,13 @@ Sub adminlogin1
 End Sub
 
 Sub PopulateServerList
-   Dim bbp, lbg, ppd, test, dev, var
+   Dim prd1, dr1, ppd, test, dev, var
    var = envDmn.Value
-   prod = Array("ALL", "172.0.0.1", "172.0.0.2", "172.0.0.4", "172.0.0.5")
-   dr = Array("ALL", "172.0.0.7", "172.0.0.8")
-   ppd = Array("ALL", "172.0.0.16", "172.0.0.17", "172.0.0.18", "172.0.0.19", "172.0.0.21", "172.0.0.22")
-   test = Array("ALL", "172.0.0.74", "172.0.0.75", "172.0.0.96", "172.0.0.97", "172.0.0.13", "172.0.0.14")
-   dev = Array("ALL", "172.0.0.24", "172.0.0.25", "172.0.0.26", "172.0.0.27", "172.0.0.28", "172.0.0.29", "172.0.0.30")
+   prd1 = Array("ALL", "127.0.0.1", "127.0.0.2", "127.0.0.3", "127.0.0.4")
+   dr1 = Array("ALL", "127.0.0.5", "127.0.0.6")
+   ppd = Array("ALL", "127.0.0.7", "127.0.0.8", "127.0.0.9", "127.0.0.10", "127.0.0.11", "127.0.0.12")
+   test = Array("ALL", "127.0.0.13", "127.0.0.14", "127.0.0.15", "127.0.0.16", "127.0.0.17", "127.0.0.18")
+   dev = Array("ALL", "127.0.0.19", "127.0.0.20", "127.0.0.21", "127.0.0.22", "127.0.0.23", "127.0.0.24", "127.0.0.25")
 
    ExampleOutput.value=var
    
@@ -106,35 +121,35 @@ Sub PopulateServerList
        opt.RemoveNode
    Next 
 
-   If var="prod\domain1" Then
-      For Each ips in prod
+   If var="prd1\DOMAIN1" Then
+      For Each ips in prd1
          Set opt = document.createElement("option")
 	     opt.Value = CStr(ips)
          opt.Text = CStr(ips)
          dropdown2.Add(opt)
       Next    
-   Elseif var="dr\domain1" Then
-      For Each ips in dr
+   Elseif var="dr1\DOMAIN1" Then
+      For Each ips in dr1
          Set opt = document.createElement("option")
          opt.Value = CStr(ips)
          opt.Text = CStr(ips)
          dropdown2.Add(opt)
       Next    
-   Elseif var="PREPROD\domain2" Then
+   Elseif var="PREPROD\DOMAIN2" Then
       For Each ips in ppd
          Set opt = document.createElement("option")
          opt.Value = CStr(ips)
          opt.Text = CStr(ips)
          dropdown2.Add(opt)
       Next    
-   Elseif var="TEST\domain3" Then
+   Elseif var="TEST\DOMAIN3" Then
       For Each ips in test
          Set opt = document.createElement("option")
          opt.Value = CStr(ips)
          opt.Text = CStr(ips)
          dropdown2.Add(opt)
       Next    
-   Elseif var="DEV\domain3" Then
+   Elseif var="DEV\DOMAIN3" Then
       For Each ips in dev
          Set opt = document.createElement("option")
          opt.Value = CStr(ips)
@@ -171,9 +186,9 @@ pre {
 <body onload="Initialize()">
 <pre><B>   Atos Terminal Login</B>
 
-   UserID <input type="text" name="UserArea" size="15">   Password <input type="password" name="PasswordArea" size="15">
+   UserID <input type="text" name="UserArea" size="15">   Password <input type="password" name="PasswordArea" size="15">     <button type="button" id="StrRL" onclick="StartSIAL()"><b>Login</b></button>
    
-                   Environment \ Domain <select size="1" name="envDmn" onchange="PopulateServerList"><option value="BBP\RMGP">BBP\RMGP</option><option value="LBG\RMGP">LBG\RMGP</option><option value="PREPROD\RMGV">PREPROD\RMGV</option><option value="TEST\RMGN">TEST\RMGN</option><option value="DEV\RMGN">DEV\RMGN</option></select>     <button type="button" id="StrRL" onclick="StartSIAL()"><b>Login</b></button>
+                   Environment \ Domain <select size="1" name="envDmn" onchange="PopulateServerList"><option value="prd1\RMGP">prd1\DOMAIN1</option><option value="dr1\RMGP">dr1\DOMAIN1</option><option value="PREPROD\RMGV">PREPROD\DOMAIN2</option><option value="TEST\RMGN">TEST\DOMAIN3</option><option value="DEV\RMGN">DEV\DOMAIN3</option></select>    <input type="checkbox" name="checkbox2"> Cleanup saved user session
 				   
                                   Termonal Server <select name="dropdown2" id="dropdown2"><option value="nill">-- Select Server --</option></select>    <input type="checkbox" name="checkbox1"> Admin login<!-- onclick="adminlogin1()">-->
 									   
@@ -187,7 +202,7 @@ pre {
 
 ## Env_config file for this is:
 ```powershell
-Param($ScriptDir, $FileNameStartWitn, $envdomn, $inputUid, $inputPas, $bbpLbg)
+Param($ScriptDir, $FileNameStartWitn, $envdomn, $inputUid, $prd1dr1)
 
 #-----------------------------------
 # I/O and LOG file settings
@@ -222,8 +237,10 @@ log "$domn Domain"
 
 $usrFile = $ScriptDir + '\' + $domn + "UserID.txt"
 $passFile = $ScriptDir + '\' + $domn + "EncPass.txt"
+$newFile = $ScriptDir + "\newTmp.txt"
 $snusr = $( cat $usrFile 2> $null )
 $snpass = $( cat $passFile 2> $null)
+$newPass = $( cat $newFile 2> $null)
 
 If ($inputUid -eq $Null -OR $inputUid -eq '') {
   If ($snusr -eq $Null) {
@@ -236,17 +253,17 @@ If ($inputUid -eq $Null -OR $inputUid -eq '') {
   $snusr = $domn + '\' + $inputUid
 }
 
-If ($inputPas -eq $Null -OR $inputPas -eq '') {
+If ($newPass -eq $Null -OR $newPass -eq '') {
   If ($snpass -eq $Null) {
     Log "First time login? Please provide your Password and try again."
     $exit_flg=1
     exit
   }
 }else {
-  $qvpas = ConvertTo-SecureString $inputPas -AsPlainText -Force
-  $snpass = ConvertFrom-SecureString $qvpas
+  $snpass = ConvertTo-SecureString $newPass | ConvertFrom-SecureString
   $snpass | out-file -Filepath $passFile
 }
+echo '' > $newFile
 $secPass = $snpass | ConvertTo-SecureString
 
 $sv_time = $( (Get-Date).tostring("HHmmss") )
@@ -263,52 +280,46 @@ $MaxThreads = 7 # Setting up maxmimun threads
 #-----------------------------------
 # Server list
 #-----------------------------------
-   prod = Array("ALL", "172.0.0.1", "172.0.0.2", "172.0.0.4", "172.0.0.5")
-   dr = Array("ALL", "172.0.0.7", "172.0.0.8")
-   ppd = Array("ALL", "172.0.0.16", "172.0.0.17", "172.0.0.18", "172.0.0.19", "172.0.0.21", "172.0.0.22")
-   test = Array("ALL", "172.0.0.74", "172.0.0.75", "172.0.0.96", "172.0.0.97", "172.0.0.13", "172.0.0.14")
-   dev = Array("ALL", "172.0.0.24", "172.0.0.25", "172.0.0.26", "172.0.0.27", "172.0.0.28", "172.0.0.29", "172.0.0.30")
+$prd1_dr1=$prd1dr1
 
-$prod_dr=$proddr
-
-$prod_donain1=(
-"172.0.0.1",
-"172.0.0.2",
-"172.0.0.4",
-"172.0.0.5"
+$prd1_DOMAIN1=(
+"127.0.0.1",
+"127.0.0.2",
+"127.0.0.3",
+"127.0.0.4"
 )
 
-$dr_donain1=(
-"172.0.0.7",
-"172.0.0.8"
+$dr1_DOMAIN1=(
+"127.0.0.5",
+"127.0.0.6"
 )           
             
-$preprod_donain2=(
-"172.0.0.16",
-"172.0.0.17",
-"172.0.0.18",
-"172.0.0.19",
-"172.0.0.21",
-"172.0.0.22"
+$preprod_DOMAIN2=(
+"127.0.0.7",
+"127.0.0.8",
+"127.0.0.9",
+"127.0.0.10",
+"127.0.0.11",
+"127.0.0.12"
 )
 
-$test_donain3=(
-"172.0.0.74",
-"172.0.0.75",
-"172.0.0.96",
-"172.0.0.97",
-"172.0.0.13",
-"172.0.0.14"
+$test_DOMAIN3=(
+"127.0.0.13",
+"127.0.0.14",
+"127.0.0.15",
+"127.0.0.16",
+"127.0.0.17",
+"127.0.0.18"
 )
 
-$dev_donain3=(
-"172.0.0.24",
-"172.0.0.25",
-"172.0.0.26",
-"172.0.0.27",
-"172.0.0.28",
-"172.0.0.29",
-"172.0.0.30"
+$dev_DOMAIN3=(
+"127.0.0.19",
+"127.0.0.20",
+"127.0.0.21",
+"127.0.0.22",
+"127.0.0.23",
+"127.0.0.24",
+"127.0.0.25"
 )
 
 #=====================================
@@ -323,7 +334,9 @@ Function FindWindow([string]$windowName, [int]$sleepInterval = 1000) {
   Do {
     Start-Sleep -Milliseconds $sleepInterval
     Try {
+	
 	    [Microsoft.VisualBasic.Interaction]::AppActivate($windowName)
+		
       $windowFound = $true;
     } Catch {
       $windowFound = $false;
@@ -346,6 +359,7 @@ Function rdp_login($ipAdr, $admLn) {
         mstsc.exe /v $ipAdr /admin /f
     } else {
         mstsc.exe /v $ipAdr /f
+		
     }
 }
 
@@ -357,10 +371,10 @@ $PrevOpendRdpPidList=(Get-WMIObject -Class Win32_Process -Filter "Name='mstsc.ex
 
 function connect_rdp($svr_list, $admLogin)
 {
-    if ( $snusr.split('\')[0] -eq "donain1" )
+    if ( $snusr.split('\')[0] -eq "DOMAIN1" )
     {
         $svr_list | % {
-            rdp_login $_ $admLogin
+		    rdp_login $_ $admLogin
         }
     } else {
         $svr_list | % {
@@ -383,7 +397,7 @@ function connect_rdp($svr_list, $admLogin)
 					try {
 						Start-Sleep -Milliseconds 1000
 						[Microsoft.VisualBasic.Interaction]::AppActivate("Windows Security")
-						Start-Sleep -Milliseconds 1000
+						Start-Sleep -Milliseconds 500
 						[System.Windows.Forms.SendKeys]::SendWait($( [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secPass)) )+'{ENTER}')
 						log "$attempts Attempt to login.."
 					} catch {
@@ -412,11 +426,21 @@ function enter_into_rdp($svr_name)
         [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
     }
 }
+
+function clear_saved_session()
+{
+	Get-ChildItem "HKCU:\Software\Microsoft\Terminal Server Client" -Recurse | Remove-ItemProperty -Name UsernameHint -Ea 0
+	Remove-Item -Path 'HKCU:\Software\Microsoft\Terminal Server Client\servers' -Recurse  2>&1 | Out-Null
+	Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Terminal Server Client\Default' 'MR*'  2>&1 | Out-Null
+	$docs = [environment]::getfolderpath("mydocuments") + '\Default.rdp'
+	remove-item  $docs  -Force  2>&1 | Out-Null
+}
 #get-process iexplore | stop-process
+
 ```
 ## Powershell script to invoke rdp
 ```powershell
-Param($envdomn, $usr, $pass, $admLogin, $ipAdr, $bbpLbg)
+Param($envdomn, $usr, $admLogin, $clrHist, $ipAdr, $prd1rd1)
 # If you are getting the error .ps1 script cannot be run. Then execute the below command.
 #Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 
@@ -427,7 +451,7 @@ $FileNameStartWitn = "Rdp_Login"
 #=====================================
 # Environment Variable Configuration
 #=====================================
-. $EnvConfig $ScriptDir $FileNameStartWitn $envdomn $usr $pass $bbpLbg
+. $EnvConfig $ScriptDir $FileNameStartWitn $envdomn $usr $prd1rd1
 
 if($exit_flg -eq 1) {
   log "END"
@@ -439,10 +463,10 @@ log "Log file is: $logfile"
 log "Start time : $(Get-Date)"
 log "Domain\UserID : $snusr"
 
-if( $domn -eq "domain1" ) {
-  if( $rEnv -eq "prod" ) {
+if( $domn -eq "DOMAIN1" ) {
+  if( $rEnv -eq "prd1" ) {
     if( $ipAdr -eq "ALL" ) {
-	  $rmv_crd = $prod_domain1
+	  $rmv_crd = $prd1_DOMAIN1
     }
 	else {
 	  $rmv_crd = $ipAdr
@@ -450,25 +474,25 @@ if( $domn -eq "domain1" ) {
   }
   else {
     if( $ipAdr -eq "ALL" ) {
-	  $rmv_crd = $dr_domain1
+	  $rmv_crd = $dr1_DOMAIN1
     }
 	else {
 	  $rmv_crd = $ipAdr
 	}
   }
 }
-elseif( $domn -eq "domain2" ) {
+elseif( $domn -eq "DOMAIN2" ) {
    if( $ipAdr -eq "ALL" ) {
-     $rmv_crd = $preprod_domain2
+     $rmv_crd = $preprod_DOMAIN2
    }
    else {
      $rmv_crd = $ipAdr
    }
 }
-elseif( $domn -eq "domain3" ) {
+elseif( $domn -eq "DOMAIN3" ) {
   if( $rEnv -eq "TEST" ) {
     if( $ipAdr -eq "ALL" ) {
-	  $rmv_crd = $test_domain3
+	  $rmv_crd = $test_DOMAIN3
     }
 	else {
 	  $rmv_crd = $ipAdr
@@ -476,7 +500,7 @@ elseif( $domn -eq "domain3" ) {
   }
   else {
     if( $ipAdr -eq "ALL" ) {
-	  $rmv_crd = $dev_domain3
+	  $rmv_crd = $dev_DOMAIN3
     }
 	else {
 	  $rmv_crd = $ipAdr
@@ -484,9 +508,18 @@ elseif( $domn -eq "domain3" ) {
   }
 }
 
+#Cleanup the saved used session
+if( $clrHist -eq "Yes" ) {
+	clear_saved_session
+}
+
+#To ignore the certificate warning on remote desktop connection pop-up
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client" /v "AuthenticationLevelOverride" /t "REG_DWORD" /d 0 /f
+
 connect_rdp $rmv_crd $admLogin
 
 if($closeRemain -eq $true) {
+    remove_cr $rmv_crd
 	$host.Exit()
 }
 $count=20
