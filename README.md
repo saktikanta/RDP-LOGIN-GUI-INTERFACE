@@ -184,7 +184,7 @@ pre {
 <hta:application>
 </head> 
 <body onload="Initialize()">
-<pre><B>   Atos Terminal Login</B>
+<pre><B>        Terminal Login</B>
 
    UserID <input type="text" name="UserArea" size="15">   Password <input type="password" name="PasswordArea" size="15">     <button type="button" id="StrRL" onclick="StartSIAL()"><b>Login</b></button>
    
